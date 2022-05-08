@@ -1,4 +1,4 @@
-# PUT
+# Why?
 
 ## The collection of different shit from AI major at PUT
 
