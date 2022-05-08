@@ -1,0 +1,43 @@
+
+
+WITH cte AS (SELECT product_id, recipe_id, COUNT(product_id) AS used, AVG(quantity) AS avg FROM recipes_ingredients GROUP BY product_id, recipe_id) SELECT p.name, cte.used, cte.avg FROM products p INNER JOIN cte ON p.product_id = cte.product_id WHERE cte.used > 10 AND p.unit_price BETWEEN 10 AND 20 ORDER BY p.name;
+
+SELECT name FROM recipe INNER JOIN 
+
+
+SELECT r.name FROM recipes r INNER JOIN products p ON r.recipe_id = p.product_id GROUP BY r.recipe_id HAVING (COUNT(r.product_id) * p.unit_price * r.quantity) > 100 ORDER BY r.name;
+
+SELECT * FROM recipes_ingredients;
+
+
+/* part 2 */
+
+
+SELECT r.name, p.name, i.quantity || ' kg' AS quantity FROM recipes_ingredients i INNER JOIN products p using(product_id) INNER JOIN recipes r using(recipe_id) ORDER BY r.name;
+
+select r.name, a.name, d.description, d.sequence_number
+from recipes r inner join recipes_details d using(recipe_id) inner join actions a using(action_id)
+order by r.name;
+
+/* Part 1 */
+
+SELECT r.name, a.name AS name_of_recipe, COUNT(a.action_id) AS number_of_actions FROM recipes r INNER JOIN actions a ON r.recipe_id = a.action_id GROUP BY r.name, a.name ORDER BY r.name, a.name;
+
+
+SELECT r.name FROM recipes r INNER JOIN products p ON r.recipe_id = p.product_id INNER JOIN recipes_ingredients i ON i.product_id = p.product_id GROUP BY r.recipe_id HAVING (COUNT(r.product_id) * p.unit_price * i.quantity) > 100 AND COUNT( ORDER BY r.name;
+
+
+
+WITH cte AS (SELECT i.recipe_id, SUM(p.unit_price * i.quantity) AS cost FROM recipes_ingredients i n products p using(product_id)
+    group by i.recipe_id)
+select name, cost
+from recipes inner join smth using(recipe_id) HAVING cost > 100
+order by cost desc, name;
+
+
+WITH
+    pr_cost AS (SELECT i.recipe_id, SUM(p.unit_price * i.quantity) as cost FROM recipes_ingredients i INNER JOIN products p ON i.product_id = p.product_id GROUP BY i.recipe_id),
+    labor_intencive AS (SELECT recipe_id, MAX(sequence_number) AS lab FROM recipes_details GROUP BY recipe_id)
+SELECT name
+FROM recipes r INNER JOIN pr_cost USING(recipe_id) INNER JOIN labor_intencive USING(recipe_id)
+WHERE cost > 100 AND lab >= 10;

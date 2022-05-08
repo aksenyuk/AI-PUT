@@ -1,0 +1,54 @@
+/* Lab 4 */
+
+/* Task 1 */
+
+SELECT MIN(salary) AS minimum_salary, MAX(salary) AS maximum_salary, (MAX(salary) - MIN(salary)) AS difference FROM employees;
+
+/* Task 2 */
+
+SELECT COUNT(*) AS employees_without_dept FROM employees WHERE dept_id IS NULL;
+
+/* Task 3 */
+
+SELECT COUNT(*) AS professors FROM employees WHERE job = 'PROFESSOR';
+
+/* Task 4 */
+
+SELECT job, ROUND(AVG(salary), 2) AS job_average_salary FROM employees GROUP BY job ORDER BY AVG(salary) DESC;
+
+/* Task 5 */
+
+SELECT job, ROUND(AVG(salary + COALESCE(add_salary, 0)), 2) AS job_average_salary, COUNT(*) AS employees FROM employees GROUP BY job ORDER BY ROUND(AVG(salary + COALESCE(add_salary, 0)), 2) DESC;
+
+/* Task 6 */
+
+SELECT job, ROUND(AVG(salary + COALESCE(add_salary, 0)), 2) AS job_average_salary, COUNT(*) AS employees FROM employees GROUP BY job HAVING COUNT(*) > 1 ORDER BY ROUND(AVG(salary + COALESCE(add_salary, 0)), 2) DESC;
+
+/* Task 7 */
+
+SELECT dept_id, COUNT(*) AS employees_with_add_salary FROM employees WHERE dept_id IS NOT NULL AND add_salary IS NOT NULL GROUP BY dept_id ORDER BY dept_id;
+
+/* Task 8 */
+
+SELECT dept_id, COUNT(*) AS employees_with_add_salary, AVG(add_salary) AS avg_add_salary, SUM(add_salary) AS sum_of_add_salaries FROM employees WHERE dept_id IS NOT NULL AND add_salary IS NOT NULL GROUP BY dept_id ORDER BY dept_id;
+
+/* Task 9 */
+
+SELECT boss_id, COUNT(*) AS number_of_subordinates FROM employees WHERE boss_id IS NOT NULL GROUP BY boss_id ORDER BY boss_id;
+
+/* Task 10 */
+
+SELECT EXTRACT(YEAR FROM hire_date) AS year_of_employment, COUNT(*) AS number_of_employees FROM employees GROUP BY EXTRACT(YEAR FROM hire_date) ORDER BY EXTRACT(YEAR FROM hire_date);
+
+/* Task 11 */
+
+SELECT LENGTH(surname) AS surname_length, COUNT(*) AS number_of_surnames FROM employees GROUP BY LENGTH(surname) ORDER BY LENGTH(surname);
+
+/* Task 12 */
+
+SELECT COUNT(*) AS surnames_with_a FROM employees WHERE surname LIKE '%A%' OR surname LIKE '%a%';
+SELECT COUNT(*) AS surnames_with_e FROM employees WHERE surname LIKE '%E%' OR surname LIKE '%e%';
+
+/* Task 13 */
+
+SELECT DISTINCT (SELECT COUNT(*) FROM employees WHERE surname LIKE '%A%' OR surname LIKE '%a%') AS surnames_with_a, (SELECT COUNT(*) FROM employees WHERE surname LIKE '%E%' OR surname LIKE '%e%') AS surnames_with_e FROM employees;

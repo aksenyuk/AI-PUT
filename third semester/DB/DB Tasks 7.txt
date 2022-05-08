@@ -1,0 +1,25 @@
+/* Lab 7 */
+
+/* Task 1 */
+
+WITH cte AS (SELECT e.surname, e.job, e.salary, AVG(b.salary) AS avg_sal_for_job FROM employees e INNER JOIN employees b ON e.job = b.job GROUP BY e.surname, e.job, e.salary HAVING e.salary > AVG(b.salary)) SELECT surname, job, salary, avg_sal_for_job FROM cte ORDER BY surname;
+
+/* Task 2 */
+
+WITH cte AS (SELECT d.dept_name, SUM(e.salary) AS sum_of_sal FROM departments d FULL OUTER JOIN employees e ON d.dept_id = e.dept_id GROUP BY d.dept_name HAVING SUM(e.salary) >= ALL (SELECT SUM(salary) FROM employees GROUP BY job)) SELECT dept_name, sum_of_sal FROM cte;
+
+/* Task 3 */
+
+WITH cte AS (SELECT e.surname, e.salary,  b.surname AS boss_name, b.salary AS boss_salary FROM employees e INNER JOIN employees b ON e.boss_id = b.emp_id WHERE e.salary >= 0.6 * b.salary) SELECT surname, salary, boss_name, boss_salary FROM cte ORDER BY surname;
+
+/* Task 4 */
+
+WITH cte AS (SELECT surname, TO_CHAR(hire_date, 'YYYY-MM-DD') AS hire_date FROM employees ORDER BY hire_date) SELECT surname, hire_date FROM cte FETCH FIRST 1 ROW ONLY;
+
+/* Task 5 */
+
+WITH cte AS (SELECT surname, (hire_date - (SELECT hire_date FROM employees FETCH FIRST 1 ROW ONLY)) AS num_of_days FROM employees) SELECT surname, num_of_days FROM cte ORDER BY num_of_days;
+
+/* Task 6 */
+
+WITH cte AS (SELECT 0 as digit, 'zero' AS word FROM dual UNION ALL SELECT 1 as digit, 'one' AS word FROM dual UNION ALL SELECT 2 as digit, 'two' AS word FROM dual UNION ALL SELECT 3 as digit, 'three' AS word FROM dual UNION ALL SELECT 4 as digit, 'four' AS word FROM dual UNION ALL SELECT 5 as digit, 'five' AS word FROM dual UNION ALL SELECT 6 as digit, 'six' AS word FROM dual UNION ALL SELECT 7 as digit, 'seven' AS word FROM dual UNION ALL SELECT 8 as digit, 'eight' AS word FROM dual UNION ALL SELECT 9 as digit, 'nine' AS word FROM dual) SELECT (surname || ' earns ' || word || ' grand') AS "Sentence" FROM cte CROSS JOIN employees WHERE ROUND(salary / 1000) = digit ORDER BY surname;

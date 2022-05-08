@@ -1,0 +1,69 @@
+// Task 1 //
+
+db.employees.find()
+
+Four lines get displayed. Three of them contain the same data about "Smith", except "_id" which is different for each of them. 
+And one line about "Jones" that also displays their hire_date as "ISODate", which takes form of date together with time "00:00:00".
+ 
+// Task 2 //
+
+db.departments.insert([{"dept_id":10,"dept_name":"ADMINISTRATION","address":"GRAND AVE 2"},
+
+{"dept_id":20,"dept_name":"DISTRIBUTED SYSTEMS","address":"GRAND AVE 3"},
+
+{"dept_id":30,"dept_name":"EXPERT SYSTEMS","address":"47TH STR"},
+
+{"dept_id":40,"dept_name":"ALGORITHMS","address":"45TH STR"},
+
+{"dept_id":50,"dept_name":"OPERATIONAL RESEARCH","address":"PLAINFIELD ROAD"}])
+
+// Task 3 //
+
+Query: db.employees.find({"job":"PROFESSOR"}, {"surname":1, "_id":0}) displays surnames of all professors, except their "_id".
+
+Query: db.employees.find({"job":"PROFESSOR"}, {"surname":0, "_id":0}) displays all the data about professors, except "surname" and "_id".
+
+Query: db.employees.find({"job" : "PROFESSOR"}, {"surname": 1, "salary":0}) displays error, which says "Cannot do exclusion on field salary in inclusion projection".
+
+// Task 4 //
+
+db.employees.find({$or:[{"job":"ASSISTANT"}, {"salary":{$gt:2800, $lt:3300}}]},{"surname":1, "job":1, "salary":1, "_id":0})
+
+// Task 5 //
+
+db.employees.find({"salary":{$gt:1500}}, {"surname":1, "job":1, "salary":1, "_id":0}).sort({"job":1, "salary":-1})
+
+// Task 6 //
+
+db.employees.find({dept_id:20}, {surname:1, salary:1, _id:0}).sort({salary:-1}).skip(1).limit(1)
+
+// Task 7 //
+
+db.employees.find({job:{$ne:"ASSISTANT"}, "dept_id":{$in:[20, 30]}, "surname":{$regex:"s$"}}, {"surname":1, job:1, _id:0})
+
+// Task 8 //
+
+db.employees.aggregate([{$project: { "_id": 0, "job":1, "hire_year":{$year:"$hire_date"}, "surname":1 }}, {$sort: {"salary":-1}}, {$skip : 2},{$limit: 1}]) 
+
+
+// Task 9 //
+
+db.employees.aggregate([{$group:{_id: "$dept_id", count: {$sum: 1}}},{$match: {count: {$gt:2}}}]) 
+
+// Task 10 //
+
+db.employees.aggregate([ {$lookup: {from: "departments", localField: "dept_id", foreignField: "dept_id", as: "emp_department"} }, 
+{$match:{"emp_department.dept_id":{$in:[20, 30]}}},
+{$project: {"_id":0, "surname":1, "dept": {$arrayElemAt:["$emp_department.address",0]} }}])
+
+// Task 11 //
+
+db.employees.aggregate([ {$lookup: {from: "departments", localField: "dept_id", foreignField: "dept_id", as: "emp_department"} }, 
+{$match:{"emp_department.address":{$regex: "GRAND AVE"}}},
+{$project: {"_id":0, "surname":1, "dept_name": {$arrayElemAt:["$emp_department.dept_name",0]} }}])
+
+// Task 12 //
+
+db.employees.aggregate([ {$lookup: {from: "departments", localField: "dept_id", foreignField: "dept_id", as: "emp_department"} }, 
+{$group: {"_id": {$arrayElemAt:["$emp_department.dept_name",0]}, "count": {$sum: 1} }},
+{$project: {"_id":0, "department": "$_id" , "count": 1} } ])

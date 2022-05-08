@@ -1,0 +1,33 @@
+/* Lab 6.2 */
+
+/* Task 1 */
+
+SELECT d.dept_id, d.dept_name, d.address FROM departments d WHERE (SELECT COUNT(*) FROM employees e WHERE e.dept_id = d.dept_id) = 0;
+
+/* Task 2 */
+
+SELECT e.surname, e.job, e.salary FROM employees e WHERE e.salary > (SELECT AVG(t.salary) FROM employees t WHERE e.job = t.job) ORDER BY e.surname;
+
+/* Task 3 */
+
+SELECT e.surname, e.job, e.salary, (SELECT AVG(d.salary) FROM employees d WHERE d.job = e.job) AS avg_salary_for_job FROM employees e WHERE e.salary > (SELECT AVG(t.salary) FROM employees t WHERE e.job = t.job) ORDER BY e.surname;
+
+/* Task 4 */
+
+SELECT e.surname, e.job, e.salary FROM employees e WHERE e.salary > 0.6 * (SELECT b.salary FROM employees b WHERE b.emp_id = e.boss_id) ORDER BY e.surname;
+
+/* Task 5 */
+
+SELECT MAX(sum_dept_salary) AS max_sum FROM (SELECT SUM(salary) AS sum_dept_salary FROM employees GROUP BY dept_id);
+
+/* Task 6 */
+
+SELECT d.dept_name, SUM(e.salary) AS sum_of_sal FROM departments d INNER JOIN employees e ON d.dept_id = e.dept_id GROUP BY d.dept_name HAVING SUM(e.salary) = (SELECT MAX(sum_dept_salary) AS max_sum FROM (SELECT SUM(salary) AS sum_dept_salary FROM employees GROUP BY dept_id));
+
+/* Task 7 */
+
+SELECT d.dept_name, e.surname, e.salary FROM departments d JOIN employees e ON d.dept_id = e.dept_id WHERE e.salary = (SELECT MAX(salary) FROM employees WHERE dept_id = e.dept_id) GROUP BY d.dept_name, e.salary, e.surname ORDER BY d.dept_name;
+
+/* Task 8 */
+
+SELECT e.surname, e.salary FROM employees e  ORDER BY e.salary DESC FETCH FIRST 3 ROWS ONLY;

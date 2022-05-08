@@ -1,0 +1,37 @@
+/* Lab 6.1 */
+
+/* Task 1 */
+
+SELECT surname, job FROM employees WHERE dept_id = (SELECT dept_id FROM employees WHERE surname = 'Johnson') AND surname != 'Johnson' ORDER BY surname;
+
+/* Task 2 */
+
+SELECT e.surname, e.job, d.dept_name FROM employees e INNER JOIN departments d ON e.dept_id = d.dept_id WHERE e.dept_id = (SELECT dept_id FROM employees WHERE surname = 'Johnson') AND e.surname != 'Johnson' ORDER BY surname;
+
+/* Task 3 */
+
+SELECT surname, job, TO_CHAR(hire_date, 'YYYY-MM-DD') AS hire_date FROM employees WHERE hire_date <= ALL (SELECT hire_date FROM employees WHERE job = 'LECTURER') AND job = 'LECTURER';
+
+/* Task 4 */
+
+SELECT d.dept_name, e.surname, TO_CHAR(e.hire_date, 'YYYY-MM-DD')AS hire_date FROM departments d INNER JOIN employees e ON d.dept_id = e.dept_id WHERE (CURRENT_DATE - e.hire_date) <=  ALL(SELECT (CURRENT_DATE - hire_date) FROM employees WHERE dept_id = e.dept_id) ORDER BY d.dept_name;
+
+/* Task 5 */
+
+SELECT dept_id, dept_name, address FROM departments WHERE dept_id = (SELECT d.dept_id FROM departments d FULL OUTER JOIN employees e ON e.dept_id = d.dept_id WHERE e.name IS NULL);
+
+/* Task 6 */
+
+SELECT e.surname, e.job, e.salary FROM employees e WHERE e.job = 'PROFESSOR' AND (SELECT COUNT(*) FROM employees WHERE job = 'PHD STUDENT' AND boss_id = e.emp_id) = 0;
+
+/* Task 7 */
+
+SELECT d.dept_name, COUNT(*) AS num_of_empl FROM employees e INNER JOIN departments d ON e.dept_id = d.dept_id GROUP BY dept_name HAVING COUNT(*) > (SELECT COUNT(*) FROM employees e INNER JOIN departments d ON e.dept_id = d.dept_id WHERE d.dept_name = 'ADMINISTRATION') ORDER BY dept_name;
+
+/* Task 8 */
+
+SELECT EXTRACT(YEAR FROM e.hire_date) AS year, COUNT(*) AS number_of_professors FROM employees e WHERE e.job = 'PROFESSOR' GROUP BY e.hire_date HAVING COUNT(*) >= ALL (SELECT COUNT(*) FROM employees WHERE job = 'PROFESSOR' AND EXTRACT(YEAR FROM hire_date) = EXTRACT(YEAR FROM e.hire_date)) ORDER BY EXTRACT(YEAR FROM e.hire_date);
+
+/* Task 9 */
+
+SELECT d.dept_name AS department, SUM(e.salary + COALESCE(e.add_salary, 0)) AS max_sum FROM employees e INNER JOIN departments d ON e.dept_id = d.dept_id GROUP BY d.dept_name HAVING SUM(e.salary + COALESCE(e.add_salary, 0)) >= ALL (SELECT SUM(salary + COALESCE(add_salary, 0)) FROM employees GROUP BY dept_id);
