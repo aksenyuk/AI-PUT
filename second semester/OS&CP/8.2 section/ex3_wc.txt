@@ -1,0 +1,28 @@
+#include<stdio.h>
+#include<string.h>
+
+int main(int argc ,char *argv[])
+{
+        FILE *file;
+        file = fopen(argv[1],"r");
+        
+        char ch;
+        int lines = 0;
+        int bytes = 0;
+        int words = 0;
+        
+        while((ch = fgetc(file)) != EOF){
+             if(ch == '\n')
+                lines++;
+               
+             if(ch == '\n' || ch == '\0')
+                words++;
+           
+             bytes++;        
+        }
+      
+        printf(" %d  %d %d %s\n", lines, words, bytes, argv[1]);
+        
+        fclose(file);
+        return 0;
+}

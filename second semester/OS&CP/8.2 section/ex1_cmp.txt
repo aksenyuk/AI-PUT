@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<string.h>
+
+int main(int argc ,char *argv[])
+{
+        FILE *file1, *file2;
+        file1 = fopen(argv[1],"r");
+        file2 = fopen(argv[2],"r");
+        
+        char b1, b2;
+        int line = 1; 
+        int bytes = 1;
+   
+
+
+        while((b1=fgetc(file1))!=EOF && (b2=fgetc(file2))!=EOF){
+             if(b1 == b2 == '\n')
+                line++;
+             if(b1 == b2){
+                  bytes++;
+             }
+             else{
+                printf("%s %s differ: byte %d, line %d\n", argv[1], argv[2], bytes, line);
+                break;    
+             }       
+    	}
+    	
+        fclose(file1);
+        fclose(file2);
+        return 0;
+}
