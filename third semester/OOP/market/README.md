@@ -1,0 +1,3 @@
+Market Simuator OOP Project done by Sofya Aksenyuk, WIiT, AI, 3rd Semester, 150284.
+
+The first window you will see after running the program is used for entering the amount of Assets that have to be available on the market. By clicking the button "Enter", the window presenting all the available assets will be shown. To see the graph plot of an unit price change within a certain time or data of selected unit, you have to click on any of listed options.
