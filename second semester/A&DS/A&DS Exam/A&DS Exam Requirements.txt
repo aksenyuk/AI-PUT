@@ -1,0 +1,145 @@
+1. Computability of the problem. Decision and optimization problems - dependencies.
+2. Problem coding. Language and alphabet. Reasonable encoding rule.
+3. The length of the coding string.
+4. DTM and NDTM
+5. Computational complexity function.
+6. Polynomial transformation.
+7. Class P and NP problems. Complexity class diagram of decision problems.
+8. Formulation and representative examples of 5 NP-complete problems.
+    - 3-Dimensional Matching
+    - Graph Vertex Cover
+    - Clique
+    - Hamilton Circuit
+    - Set Partition
+9. Knapsack problem - formulation, examples of a problem and algorithms.
+10. NP-completeness proof - scheme.
+11. Problem P2 || Cmax
+12. Problem 1 | rj, dj | -
+13. Sorting algorithms
+    - Quick Sort QS
+    - Heap Sort HS
+    - Merge Sort MS
+    - Insertion Sort IS
+    - Selection Sort SS
+    - Bubble Sort BS
+    - Shell Sort ShS
+    - Counting Sort CS
+14. Dynamic data structures (lists, queues, tree structures)
+15. Compound data structures (adding, deleting, searching items in a list, tree and BST)
+16. Three tree searching orders (pre-order, in-order, post-order)
+17. Stack, binary tree, BST, BBST (balanced and AVL balanced tree)
+18. Directed and undirected graphs. Graph connectivity
+19. Graph representations in a digital machine
+20. Searching a graph in depth and breadth (DFS and DFS)
+21. Topological order - algorithms and examples.
+22. Bi-connectivity graphs and algorithm
+23. Euler cycle and path
+24. Hamilton cycle and path
+25. Backtracking algorithms - an example of how the algorithm works.
+26. Minimum Spanning Tree - algorithms and examples in graphs
+27. Dynamic programming algorithms example
+28. Brute Force methods for solving problems, exhaustive search
+29. Approximate and greedy like algorithms
+30. Branch and Bound method (B&B)
+31. Travelling Salesman Problem
+32. Methodology for solving open problems
+
+Ad. 1.
+Finite set of solutions. Decision (yes/no) vs. optimization (min/max of goal function)
+Decision difficult -> optimization difficult optimization easy -> decision easy
+
+Ad. 2.
+Depends on encoding
+
+Ad. 3.
+Number of elementary steps
+
+Ad. 4.
+Deterministic- and nondeterministic Turing machines. GP will send some materials??
+
+Ad. 5.
+Polynomial vs. exponential (mostly)
+Exponential includes pseudo polynomial (depends on several polynomial variables)
+
+Ad. 6.
+NP - nondeterministically polynomial
+Demonstrating that a problem is P/NP by polynomially transforming a problem of the given class.
+
+NP-complete - no polynomial algorithms known
+Splits into: ordinarly (can construct pseudo polynomial algorithm) and strongly NPC (not even a pseudo polynomial algorithm exists). No independent numerical variables -> strongly NPC  (sometimes calls it "NP hard"; Hamiltonian cycle example)
+Ad 7.
+-
+Ad 8.
+Check yo notes/google to get relevant info on what the algorithms are.
+Only set partition is ordinary NPC. The rest - strongly NPC
+
+Ad 9.
+-
+
+Ad 10.
+Proving NP completeness in a general case - NDTM, oracle...
+
+Ad. 11.
+Splitting jobs between two processors w/deadlines.
+Finding a feasible solution
+ORDINARLY NP complete (transforming to one of the big 5 - set partitioning problem)
+
+Ad. 12.
+GP said NOTHING
+
+Ad. 13.
+Analyse on an example case, worst case scenario, performance on different "data shapes"
+
+Ad. 14.
+-
+Ad. 15.
+Report style
+
+Ad. 16.
+-
+Ad. 17.
+-
+Ad. 18.
+-
+
+Ad. 19.
+Best representations for simple tasks
+
+Ad. 20.
+-
+Ad. 21.
+**The book**
+
+Ad. 22.
+Articulation points, biconnected subgraphs of a given graph. Complexity of the algorithm.
+
+For 23 and 24 (Euler and Hamilton): complexity, example algorithms
+Ad. 23.
+-
+Ad. 24.
+-
+Ad. 25.
+GENERAl method - permutations of possible solutions, returning when the recently encountered solution is deemed infeasible
+
+Ad. 26.
+Kruskal and Prim algorithms. Finding MST for an example graph
+
+Ad. 27.
+Knapsack problem; solutions of subproblems at every step in a multi-level decision problem.
+
+Ad. 28.
+Exhaustive search. Advantages and disadvantages
+
+Ad. 29.
+When is it reasonable to use greedy algorithms? When do they give the optimal solution? (Matroid)
+
+Ad. 30.
+Basic description and formulation of B&B.
+
+Ad. 31.
+Definition. Applying B&B, example ways of solving.
+
+Ad. 32.
+    1) Try to find OPTIMAL polynomial algorithm -> P
+    2) If 1) fails - transform an NP Complete -> NPC (justified to use approximate)
+    3) If neither succeeded -> open problem

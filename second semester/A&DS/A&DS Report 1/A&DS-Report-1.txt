@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+//////////////////////////////////////////////////////////
+void bubbleSort(int array[], int len){
+  for (int step = 0; step < len - 1; step++){  //number of swaps
+    for (int i = 0; i < len - step - 1; i++){  //length of considered elements of array
+      if (array[i] > array[i + 1]){  //swap itself
+        int temp;
+        temp = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = temp;
+      }
+    }
+  }
+}
+
+
+//////////////////////////////////////////////////////////
+  void hpf(int array[], int len, int i){
+    int maxim = i, temp;  //i - index of currently last node to hpf down with
+    int right = 2 * i + 2;
+    int left = 2 * i + 1;
+
+    //creating max heap
+    if (right < len && array[right] > array[maxim]){
+      maxim = right;
+    }
+    if (left < len && array[left] > array[maxim]){
+      maxim = left;
+    }
+    if (maxim != i){
+      temp = array[i];
+      array[i] = array[maxim];
+      array[maxim] = temp;
+      hpf(array, len, maxim);
+    }
+  }
+
+  void heapSort(int array[], int len){
+    for (int i = len / 2 - 1; i >= 0; i--){  //dividing
+      hpf(array, len, i);
+    }
+    int temp;
+    for (int i = len - 1; i >= 0; i--){  //swap
+      temp = array[i];
+      array[i] = array[0];
+      array[0] = temp;
+      hpf(array, i, 0);  //creates max heap + reduces array
+    }
+  }
+
+  
+//////////////////////////////////////////////////////////
+ void countingSort(int array[], int len){
+    int maxim = -1;
+
+    for(int i = 0; i < len; i++){  //searching for max value of array
+        if(maxim < array[i]){
+            maxim = array[i];
+        }
+    }
+    int count[maxim + 1];  //array of 0s for counting repeatitions of each value in array
+    for(int i = 0; i <= maxim; i++){
+        count[i] = 0;
+    }
+
+    for(int i = 0; i < len; i++){  //adding amount of repeatitions of each value in array
+        count[array[i]]++;
+    }
+    for(int i = 1; i <= maxim; i++){  //adding values of previous elements to each element
+        count[i] += count[i - 1];
+    }
+    int sorted_array[len];
+
+    for(int i = 0; i < len; i++){  //start of sorting merging data from count[] and array[]
+        sorted_array[count[array[i]] - 1] = array[i];
+	/* 
+	element of array[] goes to element of count[] with index = value of element of array[] 
+	and adds (this value - 1) to the sorted list of index = value of count[] element)
+	*/
+        count[array[i]]--;
+    }
+}
+
+
+//////////////////////////////////////////////////////////
+void shellSort(int array[], int len){
+    int gap = n / 2;
+    while(gap > 0){ 
+        for(int i = gap; i < len; i++){  //to check all possible gaps
+            int temp = array[i];  //current gap-element
+            int j = i;
+            while(j >= gap && array[j - gap] > temp){  //comparison with gapped
+                array[j] = array[j - gap];
+                j -= gap;
+            }
+            array[j] = temp;  //putting an element to the correct location in the initial array
+        }
+        gap = gap / 2;  //we reduce gap by 2 each time
+    }
+}
+
+
+//////////////////////////////////////////////////////////
+int main(){
+	int len;
+	scanf("%d", &len);
+
+	int randArray[len], i;
+	for(i = 0; i < len; i++){
+    		randArray[i] = rand()%len;
+	}
+	clock_t tic = clock();
+	//shellSort(randArray, len);
+	clock_t toc = clock();
+	printf("Execution time: %f seconds\n", (double)(toc - tic) / CLOCKS_PER_SEC);
+
+	//for(i = 0; i < len; i++){
+    		//printf("%d ", randArray[i]);
+	//}
+	return 0;
+}
