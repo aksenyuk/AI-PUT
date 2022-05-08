@@ -1,0 +1,36 @@
+# created Mon Jan 25 18:02:54 2021
+# by Framsticks 5.0rc15
+org:
+name:Initial dude
+genotype:~
+MX(X[| 0 :-0.9,G:0],rrLLX[G:-2.5]MX[| 0:0.8,-1:2.9])
+~
+info_timestamp:1611594131.028205
+info_author:
+info_author_ispublic:1
+info_email:
+info_email_ispublic:0
+info:(manually created)
+info_origin:0
+info_how_created:
+info_performance:
+energy0:1.0
+numparts:5
+numjoints:4
+numneurons:7
+numconnections:7
+num:1
+gnum:0
+instances:0
+lifespan:0.0
+velocity:0.0
+distance:0.0
+vertvel:0.0
+vertpos:0.0
+data:@Serialized:{}
+user1:@Serialized:null
+user2:@Serialized:null
+user3:@Serialized:null
+is_valid:1
+uid:g1
+
