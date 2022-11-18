@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="promises.css">
+    <link rel="icon" type="image/svg+xml" href="assets/download-svgrepo-com.svg" />
+    <title>Load XML Data Async</title>
+</head>
+<body>
+    <p class="main-title">Load XML Data Async</p>
+    <div>
+        <button type="button" id="load-data" class="btn">Click Here To Load Data</button>
+        <div id="output"></div>
+    </div>
+
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript">
+        $('#load-data').click(function () {
+            const url = 'https://gist.githubusercontent.com/WISSAL-MN/fb0ce22bbd71d0bf971c6bfac9a3f9df/raw/47f9f57a446ac964a5a43cc56bc3cc4785cd6745/new%2520file.txt';
+            get(url).then(function(response) {
+                $('#output').text(response);
+                $('button').hide();
+            }, function(error) {
+                alert(error);
+            })
+        });
+
+        function get(url) {
+            return new Promise(function(resolve, reject) {
+
+                const req = new XMLHttpRequest();
+                req.open('GET', url, true);
+
+                req.onload = function() {
+                    if (req.readyState === req.DONE) {
+                        // Check the status
+                        if (req.status === 200) {
+                            // Resolve the promise with the response text
+                            resolve(req.response);
+
+                        } else {
+                            // Otherwise reject with the status text, which will hopefully be a meaningful error
+                            reject(Error(req.statusText));
+                        }
+                    }
+                };
+
+                // Handle network errors
+                req.onerror = function() {
+                    reject(Error("Network Error"));
+                };
+
+                // Make the request
+                req.send(null);
+            });
+        }
+    </script>
+</body>
+</html>
