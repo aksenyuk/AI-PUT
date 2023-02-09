@@ -6,6 +6,8 @@
 
 In each semester folder, you can find a README, describing this particular semester in general
 
+Even though there's nearly nothing - ***None, NaN, null*** - things posted, you could still find something useful in our [Shared Google Drive](https://drive.google.com/drive/folders/1_qDuhem3CEifSq0E9JsTkdEvJj23GwPu)
+
 #### P.S.: Some bigger projects are posted as separate repos, so it's recommended to check my other repos, in case you cannot find an assignment ___OR___ there's some data missing
 
 #### Good luck, pals, and remember...
