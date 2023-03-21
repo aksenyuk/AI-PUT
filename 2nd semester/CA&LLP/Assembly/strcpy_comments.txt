@@ -1,0 +1,50 @@
+bits 64             ; We use 64-bit processor
+default rel         ; The addressing mode is relative (and not absolute)
+
+global main         ; Main has to be accessible to the system
+extern printf       ; \ 
+extern scanf        ; / Declare that printf and scanf are from somewhere else
+
+section .data           ; Here go our initialized data - i.e. those with initial value
+    scanf_string db "%s", 0
+    printf_string db "%s", 0xa, 0
+
+section .bss            ; Here go our memory reservation requests - i.e. data without initial value
+    input resb 1024
+    output resb 1024
+
+section .text           ; And our code begins
+    main:               ; The entry point for out code
+        sub rsp, 8          ; Some requirement of stack alignment (ommitting this causes a segmentation fault)
+
+        lea rdi, [scanf_string]     ; \ 
+        lea rsi, [input]            ; | Invoke the scanf with format "%s" pointed by RDI and target address stored in RSI
+        call scanf wrt ..plt        ; / 
+
+        ; The "modern" approach: use REPZ to repeat string copy operation
+        mov rcx, 1024           ; The limit is 1024 characters to copy (REPZ decrements RCX with every repetition)
+        lea rsi, [input]        ; \ 
+        lea rdi, [output]       ; / Load source (RSI) and destination (RDI) addresses
+        cld                     ; Set the direction flag to 0 - addresses should increase
+        repz movsb              ; Repeat the MOVSB (move string byte) until the moved byte is zero
+
+        ; Here is the "classical" approach: manually copy bytes between addresses
+    ;     lea rbx, [input]            ; \ Load input and output addresses to some general purpose registers
+    ;     lea rcx, [output]           ; / (probably any 64-bit register would work)
+    ; copy_char:              ; The loop starts here
+    ;     mov al, [rbx]               ; \ Read a byte (character) from address pointed to by RBX
+    ;     mov [rcx], al               ; / And store that byte at address contained in RCX (C equivalent: *rcx = *rbx)
+
+    ;     inc rbx                 ; \ 
+    ;     inc rcx                 ; / Move addresses further by one byte
+
+    ;     cmp al, 0               ; Check if the copied character was '\0'
+    ;     jne copy_char           ; If not equal (i.e. al != 0), jump back to the beginning of the loop
+
+        lea rdi, [printf_string]    ; \ 
+        lea rsi, [output]           ; | Invoke the printf with format "%s\n" in RDI and string's address stored in RSI
+        call printf wrt ..plt       ; / 
+
+        add rsp, 8          ; Undo our stack manipulation
+        xor rax, rax        ; Clear RAX - this is where our return value goes (i.e. return 0)
+        ret                 ; Return
