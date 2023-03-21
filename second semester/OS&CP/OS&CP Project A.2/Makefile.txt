@@ -1,6 +1,0 @@
-all: A2
-
-A2: OSCP_A2.c
-	gcc -o A2 OSCP_A2.c -pthread
-clean:
-	rm A2
