@@ -1,0 +1,6 @@
+Nodes running in autonomous navigation:
+
+/map_server - provides map data to ros server
+/robot_state_publisher - publish current state of the robot
+/amcl - amcl particles (probabilistic localization system - represents probability distribution using particle filter)
+/move_base - move to the goal position using navigation
