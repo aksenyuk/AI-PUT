@@ -1,0 +1,9 @@
+li { list-style-type: square; }
+span#price { color: red; font-weight: bold; }
+p.first-paragraph { font-style: italic; }
+td > img { border-style: solid; border-color: blue; }
+td > img:hover { border-color: red }
+h1 + h2 { letter-spacing: 5px }
+p ~ p { color: gray }
+td[colspan="2"] { font-size: small }
+body { background-image: url(https://img.freepik.com/premium-photo/open-book-white-background_87394-13238.jpg?w=2000); background-repeat: repeat-y }
