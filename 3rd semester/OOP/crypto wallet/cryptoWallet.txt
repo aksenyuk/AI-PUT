@@ -1,0 +1,195 @@
+#include <iostream>
+#include <string>
+#include <ctime>
+#include <vector>
+using namespace std;
+
+template <class T>
+class Wallet{
+public:
+    vector <T> CollectionOfCoins;
+    void addCoin(T Currency){
+        CollectionOfCoins.push_back(Currency);
+    }
+    void toString(){
+        for(int i = 0; i <= 4; i++)
+            cout << CollectionOfCoins[i].toString();
+        cout << endl;
+    }
+    int isEmpty(){
+        int checker = 0;
+        for(int i = 0; i <= 4; i++){
+            if(CollectionOfCoins[i].getCurAmount() > 0){
+                checker = 1;
+            }
+        }
+        return checker;
+    }
+    void changeRate(int idx){
+        CollectionOfCoins[idx].changeRate(rand()%50 + 20);
+    }
+};
+
+class Currencies{
+private:
+    string NameOfCurrency;
+    float CurAmount;
+    string TypeOfCurrency;
+public:
+    string toString(){
+        return "Name of currency: " + NameOfCurrency + " Type: " + TypeOfCurrency + " Amount: " + to_string(CurAmount);
+    }
+    Currencies(string _name, float _amount, string _type){
+        NameOfCurrency = _name;
+        CurAmount = _amount;
+        TypeOfCurrency = _type;
+    }
+    float getCurAmount(){
+        return CurAmount;
+    }
+    void changeCurAmount(float action){
+         CurAmount = action;
+    }
+    string getType(){
+        return TypeOfCurrency;
+    }
+    friend class Stable;
+    friend class Unstable;
+    friend class Trader;
+    friend class NonCrypto;
+};
+
+class Trader{
+    float cryptoAmount;
+    float fiatAmount;
+    float exchRate;
+    float pSell;
+    float pBuy;
+public:
+    Trader(float _crypto, float _fiat, float _exch, float _sell, float _buy){
+        cryptoAmount = _crypto;
+        fiatAmount = _fiat;
+        exchRate = _exch;
+        pSell = _sell;
+        pBuy = _buy;
+    }
+    float trade(){
+        float randNumber;
+        float actionCrypto;
+        randNumber = float(float(rand()%100) / 100);
+        if(randNumber > pBuy){
+            actionCrypto = cryptoAmount * exchRate;
+            fiatAmount += actionCrypto;
+            cryptoAmount -= actionCrypto / exchRate;
+        }
+        else if(randNumber <= pSell and randNumber > pBuy){
+            actionCrypto = cryptoAmount * exchRate;
+            fiatAmount += actionCrypto;
+            cryptoAmount -= actionCrypto / exchRate;
+        }
+        else if(randNumber > 0 and randNumber <= pBuy){
+            actionCrypto = fiatAmount * float(float(rand()%5) / 100) / exchRate;
+            fiatAmount -= actionCrypto * exchRate;
+            cryptoAmount += actionCrypto;
+        }
+        if(cryptoAmount < 0)
+            cryptoAmount = 0;
+        return cryptoAmount;
+    }
+    float getFiatAmount(){
+        return fiatAmount;
+    }
+};
+
+class Crypto : public Currencies{
+    float pSell;
+    float pBuy;
+    float exchRate;
+public:
+    Crypto(string _name, float _amount, string _type, float _sell, float _buy, float _exch) : Currencies(_name, _amount, _type){
+        pSell = _sell;
+        pBuy = _buy;
+        exchRate = _exch;
+    }
+    string toString(){
+        return Currencies :: toString() + " Exchange rate: " + to_string(exchRate) + "\n";
+    }
+    virtual void changeRate(int randNumber) {
+        exchRate = randNumber;
+    }
+    friend class Unstable;
+    friend class Stable;
+};
+
+class NonCrypto : public Currencies{
+public:
+    NonCrypto(string _name, float _amount, string _type) : Currencies(_name, _amount, _type){}
+};
+
+class Stable : public Crypto{
+public:
+    Stable(string _name, float _amount, string _type, float _sell, float _buy, float _exch) : Crypto(_name, _amount, _type, _sell, _buy, _exch){}
+};
+
+class Unstable : public Crypto{
+public:
+    Unstable(string _name, float _amount, string _type, float _sell, float _buy, float _exch) : Crypto(_name, _amount, _type, _sell, _buy, _exch){}
+    void changeRate(int randNumber) override{
+        exchRate += randNumber;
+    }
+};
+
+int main() {
+    srand(time(0));
+    Wallet<Crypto>collection;
+    string options_stable[3] = {"Tether", "USDC", "DAI"};
+    string options_unstable[2] = {"Bitcoin", "Ethereum"};
+    float fiatAmount;
+    cout << "Enter the amount of Rubles you have:\n";
+    cin >> fiatAmount;
+    float pSell, pBuy;
+    float exchRate = 20.6;
+    cout << "Enter the probability of selling a coin:\n";
+    cin >> pSell;
+    cout << "Enter the probability of buying a coin:\n";
+    cin >> pBuy;
+    for(int i = 0; i <= 2; i++){
+        float StableAmount;
+        cout << "Enter the amount of " + options_stable[i] + " you have:\n";
+        cin >> StableAmount;
+        Crypto * someStable = new Stable(options_stable[i], StableAmount, "Stable crypto", pSell, pBuy, exchRate);
+        collection.addCoin(*someStable);
+    }
+    for(int i = 0; i <= 1; i++){
+        float UnstableAmount;
+        cout << "Enter the amount of " + options_unstable[i] + " you have:\n";
+        cin >> UnstableAmount;
+        Crypto * someUnstable = new Unstable(options_unstable[i], UnstableAmount, "Unstable crypto", pSell, pBuy, exchRate);
+        someUnstable->changeRate(rand()%30);
+        collection.addCoin(*someUnstable);
+    }
+    NonCrypto * Rubles = new NonCrypto("Rubles", fiatAmount, "Non-crypto");
+    cout << Rubles->toString() << endl;
+    collection.toString();
+    while(collection.isEmpty() != 0){
+        if(collection.isEmpty() == 0)
+            break;
+        else {
+            for (int i = 0; i <= 4; i++) {
+                if (collection.CollectionOfCoins[i].getCurAmount() == 0)
+                    continue;
+                else {
+                    Trader newTrade(collection.CollectionOfCoins[i].getCurAmount(), Rubles->getCurAmount(), exchRate,
+                                    pSell, pBuy);
+                    collection.CollectionOfCoins[i].changeCurAmount(newTrade.trade());
+                    if(collection.CollectionOfCoins[i].getType() == "Unstable crypto")
+                        collection.changeRate(i);
+                    Rubles->changeCurAmount(newTrade.getFiatAmount());
+                    cout << Rubles->toString() << endl;
+                    collection.toString();
+                }
+            }
+        }
+    }
+    return 0;
+}
