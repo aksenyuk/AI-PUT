@@ -1,0 +1,236 @@
+---
+title: "Covid Tracker"
+output: 
+  flexdashboard::flex_dashboard:
+    logo: "this_PP_znak.png"
+    orientation: rows
+    vertical_layout: fill
+    source_code: embed
+    theme: cosmo
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(knitr)
+library(ggiraph)
+library(plotly)
+library(highcharter)
+library(googleVis)
+library(metricsgraphics)
+library(viridis)
+library(DT)
+library(readr)
+library(RCurl)
+library(rio)
+data <- rio::import("https://raw.githubusercontent.com/allsuitablenamesarealreadytaken/Covid-Tracker-dashboard/main/superNewData.csv",
+                    format = "csv")
+```
+Sidebar {.sidebar}
+=======================================================================
+ 
+```{r}
+selectInput('selected_country', 'Select Country', unique(data["location"]))
+```
+
+Map
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### Total cases around the world
+
+```{r}
+un <- unique(data[["location"]])
+countries <- character(length(un))
+means <- numeric(length(un))
+  
+for (x in 1:length(un)){
+  check <- max(data[data["location"] == un[x], ]["total_cases"], na.rm = TRUE)
+  if(is.infinite(i<-suppressWarnings(check))){
+    countries[x] <- un[x]
+    means[x] <- 0
+  }
+  else{
+    if(check < 50000000){
+        countries[x] <- un[x]
+        means[x] <- as.numeric(check)
+    }
+  }
+}
+  
+dt <- data.frame(countries, means)
+  
+hc <- highchart() %>%
+  hc_add_series_map(
+    map=worldgeojson, df=dt, value = "means", joinBy = c('name', 'countries'),
+    name = "Cases"
+  )  %>% 
+  hc_colorAxis(minColor = "cornflowerblue", maxColor = "lightcoral") %>% 
+  hc_title(text = "World Map") %>% 
+  hc_subtitle(text = "Total cases")
+  
+hc
+```
+
+### General data
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+DT::renderDataTable({
+  DT::datatable(selectedData(), extensions = 'Buttons', options = list(dom = 'Brtip', buttons = c('copy', 'csv', 'excel', 'pdf', 'print'), 
+                lengthMenu = list(c(10,25,50,-1), c(10,25,50,"All"))))
+})
+```
+
+
+Statistics
+=======================================================================
+
+Row
+-----------------------------------------------------------------------
+
+### People vaccinated {.value-box}
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+renderValueBox({
+  people_vaccinated <- max(selectedData()["people_vaccinated"], na.rm = TRUE)
+  if(is.infinite(x<-suppressWarnings(people_vaccinated))){
+    people_vaccinated <- "No Data"
+  }
+  valueBox(
+    value = people_vaccinated,
+    icon = "fa-users",
+    color = "success"
+  )
+})
+```
+
+### Total tests
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+renderValueBox({
+  total_tests <- max(selectedData()["total_tests"], na.rm = TRUE)
+  if(is.infinite(x<-suppressWarnings(total_tests))){
+    total_tests <- "No Data"
+  }
+  valueBox(
+    value = total_tests,
+    icon = "ion-android-checkmark-circle",
+    color = "primary"
+  )
+})
+```
+
+
+Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Total cases {.tabset .tabset-fade}
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+
+renderPlotly({
+  total_cases <- selectedData()["total_cases"]
+  dates <- selectedData()["date"]
+  total <- data.frame(total_cases, dates)
+  
+  scatter_ggplot <- ggplot(total, aes(x = as.Date(date, "%Y-%m-%d"), y = total_cases, color = total_cases, 
+    text = paste('</br> Date: ', date, '</br> Total cases: ', total_cases))) +
+    geom_point(alpha = 0.25) +
+    scale_color_viridis() +
+    labs(x="Dates", y="Number of total cases") +
+    theme_minimal() +
+    theme(legend.position="none", text = element_text(size=17))
+  
+  ggplotly(scatter_ggplot, hoverinfo = "none")
+  
+})
+```
+
+### New cases {.tabset .tabset-fade}
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+renderPlot({
+  twenty <- selectedData()[selectedData()["year"] == 2020, ]
+  twenty <- na.omit(twenty["new_cases"])
+  one <- selectedData()[selectedData()["year"] == 2021, ]
+  one <- na.omit(one["new_cases"])
+  two <- selectedData()[selectedData()["year"] == 2022, ]
+  two <- na.omit(two["new_cases"])
+  years <- c("2020", "2021", "2022")
+  means <- c(mean(twenty[, "new_cases"]), mean(one[, "new_cases"]), mean(two[, "new_cases"]))
+  new_cases <- data.frame(years, means)
+  ggplot(new_cases, aes(x=years, y=means)) + geom_bar(stat="identity", width=0.5, fill='cornflowerblue') + 
+  labs(x="Years", y="Number of cases") +
+  theme_minimal() +
+  theme(legend.position="none") + theme(text = element_text(size=17))
+})
+
+```
+
+### Deaths {.tabset .tabset-fade}
+
+```{r}
+selectedData <- reactive({
+  data[data["location"] == input$selected_country, ]
+})
+
+renderPlot({
+   twenty2 <- selectedData()[selectedData()["year"] == 2020, ]
+   twenty2 <- na.omit(twenty2["total_deaths"])
+   one2 <- selectedData()[selectedData()["year"] == 2021, ]
+   one2 <- na.omit(one2["total_deaths"])
+   two2 <- selectedData()[selectedData()["year"] == 2022, ]
+   two2 <- na.omit(two2["total_deaths"])
+   years2 <- c("2020", "2021", "2022")
+   means2 <- c(mean(twenty2[, "total_deaths"]), mean(one2[, "total_deaths"]), mean(two2[, "total_deaths"]))
+   new_cases2 <- data.frame(years2, means2)
+   ggplot(new_cases2, aes(x=years2, y=means2)) + geom_bar(stat="identity", width=0.5, fill='lightcoral') + 
+   labs(x="Years", y="Number of deaths") +
+   theme_minimal() +
+   theme(legend.position="none") + theme(text = element_text(size=17))
+})
+```
+
+About
+=======================================================================
+
+
+<style type="text/css">
+body{ /* Normal  */
+      font-size: 15px;
+}
+h4 { /* Header 4 */
+  font-size: 35px;
+  color: DarkBlue;
+}
+</style>
+
+Row
+-----------------------------------------------------------------------
+
+#### Covid-19 and us <br/> <br/> Since the report of the first cases of pneumonia caused by SARS-CoV-2 in December 2019, COVID-19 has become a pandemic and is globally overwhelming healthcare systems. <br/> The symptoms of COVID-19 vary from asymptomatic infection to severe complicated pneumonia with acute respiratory distress syndrome (ARDS) and multiple organ failure leading to death. <br/> The estimated case-fatality rate among infected patients in Wuhan, the city where the first case appeared, was 1.4%, with 5.1 times increase in the death rate among those aged above 59 years than those aged 30–59 years. <br/> In the absence of a proven effective and licensed treatment, many agents that showed activity against previous coronavirus outbreaks such as SARS and MERS have been used to treat SARS-CoV-2 infection. <br/> The SARS-CoV-2 is reported to be 80% homologous with SARS-CoV, and some enzymes are almost 90% homologous. <br/> Antiviral drugs are urgently required to reduce case fatality-rate and hospitalizations to relieve the burden on healthcare systems worldwide. <br/> Randomized controlled trials are ongoing to assess the efficacy and safety of several treatment regimens. <br/> <br/> Unfortunately, most of us can relate to this world-wide issue we have to deal with on daily basis. <br/> Due to that, it was important for us to create a resourse accessible for everyone. It shows the Covid-19 related data about a country selected by a user. Convenient navigation helps a user get the information their want effortlessly. <br/> <br/> Enjoy!

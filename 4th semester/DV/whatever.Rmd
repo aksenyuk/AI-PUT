@@ -1,0 +1,76 @@
+---
+title: "King diamond"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(plotly)
+library(ggsci)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Carats vs price
+
+```{r}
+p <- ggplot(
+     diamonds[sample(nrow(diamonds), 2000), ], 
+     aes(x=carat, y=price, color=cut)
+  ) + 
+  geom_point(alpha=0.5) + 
+  scale_color_jco() + 
+  theme_bw() +
+  theme(legend.title = element_blank())
+
+ggplotly(p)
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Diamond count
+
+```{r}
+diamondCount <- nrow(diamonds)
+
+valueBox(format(diamondCount, big.mark=","), 
+         icon = "fa-gem",
+         color = ifelse(diamondCount > 50000, 
+                        "success", 
+                        "primary"))
+```
+
+### Price meter
+
+```{r}
+avgPrice <- mean(diamonds$price)
+maxPrice <- max(diamonds$price)
+
+gauge(avgPrice, min = 0, max = maxPrice, 
+      symbol = '$', gaugeSectors(
+       success =c(0.8*maxPrice, maxPrice), 
+       warning =c(0.2*maxPrice, 0.8*maxPrice), 
+       danger  =c(0, 0.2*maxPrice)
+      )
+)
+```
+
+### Cut proportions
+
+```{r}
+ggplot(diamonds, aes(x=cut, fill=cut)) + 
+  geom_bar() + 
+  scale_fill_jco() + 
+  geom_text(
+    stat='count', 
+    aes(label = ..count..), 
+    vjust=-1) +
+  theme_void() 
+```
+

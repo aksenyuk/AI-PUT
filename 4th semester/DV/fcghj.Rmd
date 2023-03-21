@@ -1,0 +1,55 @@
+---
+title: "Assignment 3"
+author: "Sofya Aksenyuk, Uladzimir Ivashka"
+date: "4/24/2022"
+    toc: yes
+    toc_float: true
+    number_sections: yes
+  word_document: default
+  pdf_document: default
+---
+
+# Introduction
+
+# Mean computation
+
+```{r, echo=F}
+library(ggplot2)
+library(knitr)
+library(DT)
+
+#prettyTable <- function(table_df, round_columns_func=is.numeric, round_digits=2) {
+#    DT::datatable(table_df, style="bootstrap", filter = "top", rownames = FALSE, extensions = "Buttons", options = list(dom = 'Bfrtip', buttons = #c('copy', 'csv', 'excel', 'pdf', 'print'))) %>%
+#    formatRound(unlist(lapply(table_df, round_columns_func)), round_digits)
+#}
+```
+
+```{r, echo=F}
+knitr::opts_chunk$set(echo=FALSE)
+```
+
+## Data
+
+```{r variables, echo=FALSE}
+sampleSize <- 100
+```
+
+I will randomly sample `r sampleSize` numbers and calculate their means.
+
+```{r computation, echo=FALSE, cache=TRUE}
+set.seed(23)
+x <- rnorm(sampleSize)
+mean(x)
+```
+
+## Plot
+
+```{r plot}
+library(ggplot2)
+library(plotly)
+df <- data.frame(value=x)
+p <- ggplot(df, aes(x=value)) +
+  geom_histogram(fill="#009988") +
+  theme_minimal()
+ggplotly(p)
+```
