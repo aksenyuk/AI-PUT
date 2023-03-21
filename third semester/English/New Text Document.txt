@@ -1,7 +1,0 @@
-1) Why does a computer need to use several types of memory? - It is used for different types of data.
-2) Give examples of an outdated memory or storage device. What do you think is the main reason they are outdated? - DVD-Discs that got outdated since over more convinient in use and keeping data storage devices were invented (such as flash memory for example)
-3) Among the properties of a memory device (speed, capacity, cost, data life-span) which one, in your opinion is the most important, and why? - Speed because all the other properties reflect on the speed (i.e., larger capacity - higher speed, etc)
-4) Which of the following is the fastest memory? - SRAM
-5) What is the common feature between DRAM and SRAM? - They both lose their contents when powered off
-6) An unopened photo is kept in the _____ of a computer. -Hard drive
-7) What is the fundamental memory element in flash memory? - Floating-gate transistors
