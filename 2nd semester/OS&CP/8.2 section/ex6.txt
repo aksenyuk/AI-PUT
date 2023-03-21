@@ -1,0 +1,57 @@
+#include<stdio.h>
+#include<string.h>
+
+int size(FILE *f){
+    int start = ftell(f);
+    fseek(f, 0, SEEK_END);
+    int size = ftell(f);
+    fseek(f, start, SEEK_SET); 
+    return size;
+}
+
+int main(int argc ,char *argv[])
+{
+          FILE *file1;
+          FILE *file2;
+          file1 = fopen(argv[1],"r");
+          file2 = fopen(argv[2],"r");
+
+	  int size1 = size(file1);
+	  int size2 = size(file2);
+	  
+	  char arr1[size1];
+	  char arr2[size2];
+
+	  int idx = 0;
+	  char line[256];
+	  char out[size1][size2], temp[size1+size2];
+	  
+	  while(fgets(line, sizeof line, file1)){
+		 sscanf(line, "%s", out[idx]);
+		idx++;  
+	  }
+	  
+	     
+	  while(fgets(line, sizeof line, file2)){
+		 sscanf(line, "%s", out[idx]);
+		idx++;  
+	  }
+	      
+	  for(int i = 0; i <= idx; i++){
+		for(int j = i + 1; j <= idx; j++){
+		       if(strcmp(out[i], out[j]) > 0){
+		            strcpy(temp ,out[i]);
+		            strcpy(out[i] ,out[j]);
+		            strcpy(out[j] ,temp);
+		       }
+		}
+	  }
+	      
+	  for(int k = 0; k < idx; k++)
+	    	puts(out[k]);
+	      
+	  fclose(file1);
+	  fclose(file2);
+	  return 0;
+
+}

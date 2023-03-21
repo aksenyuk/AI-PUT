@@ -1,0 +1,7 @@
+all: A2
+
+pc: OS&CP A2.c
+	gcc -o A2 OS&CP A2.c -pthread -lpthread -lrt -Werror
+
+clean:
+	rm OS&CP A2
