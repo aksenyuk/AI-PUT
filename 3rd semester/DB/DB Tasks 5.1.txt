@@ -1,0 +1,47 @@
+/* Lab 5.1 */
+
+/* Task 1 */
+
+SELECT employees.name, employees.surname, departments.dept_name, departments.address FROM employees INNER JOIN departments ON employees.dept_id = departments.dept_id WHERE employees.dept_id IS NOT NULL ORDER BY employees.surname;
+
+/* Task 2 */
+
+SELECT 'Employee ' || employees.name || ' ' || employees.surname || ' works in ' || departments.dept_name || ' located at ' || departments.address AS sentence FROM employees INNER JOIN departments ON employees.dept_id = departments.dept_id WHERE employees.dept_id IS NOT NULL ORDER BY employees.surname;
+
+/* Task 3 */
+
+SELECT employees.surname, employees.salary FROM employees INNER JOIN departments ON employees.dept_id = departments.dept_id WHERE departments.address = '47TH STR' ORDER BY employees.surname;
+
+/* Task 4 */
+
+SELECT COUNT(*) AS employees_at_47th_str, ROUND(AVG(employees.salary), 2) AS avg_salary FROM employees INNER JOIN departments ON employees.dept_id = departments.dept_id WHERE departments.address = '47TH STR';
+
+/* Task 5 */
+
+SELECT employees.surname, employees.job, employees.salary, jobs.min_salary, jobs.max_salary FROM employees INNER JOIN jobs ON employees.job = jobs.name ORDER BY employees.surname;
+
+/* Task 6 */
+
+SELECT employees.surname, employees.job, employees.salary, jobs.min_salary, jobs.max_salary FROM employees INNER JOIN jobs ON employees.salary BETWEEN jobs.min_salary AND jobs.max_salary WHERE jobs.name = employees.job ORDER BY employees.surname;
+
+/* Task 7 */
+
+SELECT employees.surname, employees.job, employees.salary, jobs.min_salary, jobs.max_salary FROM employees INNER JOIN jobs ON employees.salary BETWEEN jobs.min_salary AND jobs.max_salary WHERE jobs.name = 'ASSISTANT'  ORDER BY employees.surname;
+
+/* Task 8 */
+
+SELECT departments.dept_name AS department, COUNT(*) AS employees_at_dept, SUM(employees.salary) AS salaries_at_dept FROM employees INNER JOIN departments ON departments.dept_id = employees.dept_id GROUP BY departments.dept_name ORDER BY departments.dept_name;
+
+/* Task 9 */
+
+SELECT departments.dept_name AS department, COUNT(*) AS employees_at_dept, SUM(employees.salary) AS salaries_at_dept FROM employees INNER JOIN departments ON departments.dept_id = employees.dept_id GROUP BY departments.dept_name HAVING COUNT(*) > 1 ORDER BY departments.dept_name;
+
+/* Task 10 */
+
+SELECT departments.dept_name AS department,
+    CASE
+        WHEN COUNT(*) <= 2 THEN 'small'
+        WHEN COUNT(*) BETWEEN 3 AND 6 THEN 'medium'
+        WHEN COUNT(*) >= 7 THEN 'big'
+    END AS label
+FROM employees INNER JOIN departments ON departments.dept_id = employees.dept_id GROUP BY departments.dept_name ORDER BY departments.dept_name;

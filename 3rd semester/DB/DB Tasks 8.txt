@@ -1,0 +1,57 @@
+/* Lab 8 */
+
+/* Task 1 */
+
+INSERT INTO employees(emp_id, name, surname, job, boss_id, hire_date, salary, add_salary, dept_id) VALUES(300, 'Jack', 'Snow', 'PROFESSOR', (SELECT emp_id FROM employees WHERE name = 'John' AND surname = 'Smith'), DATE '2013-05-01', 4750, NULL, (SELECT dept_id FROM departments WHERE dept_name = 'EXPERT SYSTEMS'));
+INSERT INTO employees(emp_id, name, surname, job, boss_id, hire_date, salary, add_salary, dept_id) VALUES(310, 'Robin', 'Cook', 'PROFESSOR', (SELECT emp_id FROM employees WHERE name = 'John' AND surname = 'Smith'), DATE '2016-09-15', 3500, 1250, (SELECT dept_id FROM departments WHERE dept_name = 'ALGORITHMS'));
+INSERT INTO employees(emp_id, name, surname, job, boss_id, hire_date, salary, add_salary, dept_id) VALUES(320, 'Francis', 'Dormand', 'ASSISTANT', (SELECT emp_id FROM employees WHERE name = 'Carl' AND surname = 'Jones'), DATE '2018-01-01', 3900, NULL, (SELECT dept_id FROM departments WHERE dept_name = 'ALGORITHMS'));
+
+SELECT * FROM employees WHERE emp_id IN (300, 310, 320);
+
+/* Task 2 */
+
+INSERT INTO departments(dept_id, dept_name, address) VALUES(70, 'DATABASE SYSTEMS', 'not set');
+
+SELECT * FROM departments WHERE dept_id = 70;
+
+/* Task 3 */
+
+UPDATE employees SET dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') WHERE emp_id IN (300, 310, 320);
+
+SELECT surname, name, salary, add_salary FROM employees WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') ORDER BY surname;
+
+/* Task 4 */
+
+UPDATE employees SET salary = 1.1 * salary WHERE emp_id IN (300, 310, 320);
+UPDATE employees SET add_salary = 1.2 * add_salary WHERE emp_id IN (300, 310, 320) AND add_salary IS NOT NULL;
+UPDATE employees SET add_salary = 100 WHERE emp_id IN (300, 310, 320) AND add_salary IS NULL;
+
+SELECT surname, name, salary, add_salary FROM employees WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') ORDER BY surname;
+
+/* Task 5 */
+
+UPDATE employees SET salary = salary + 0.1 * (SELECT AVG(salary) FROM employees WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'ADMINISTRATION')) WHERE emp_id IN (300, 310, 320);
+
+SELECT surname, name, salary FROM employees WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') ORDER BY surname;
+
+/* Task 7 */
+
+DELETE FROM employees WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') AND salary < 5000;
+
+UPDATE employees SET dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS') WHERE emp_id IN (300, 310, 320);
+
+UPDATE employees SET dept_id = NULL WHERE dept_id = (SELECT dept_id FROM departments WHERE dept_name = 'DATABASE SYSTEMS');
+
+SELECT * FROM employees ORDER BY emp_id;
+
+/* Task 8 */
+
+DELETE FROM departments WHERE dept_name = 'DATABASE SYSTEMS';
+
+SELECT * FROM departments;
+
+/* Task 9 */
+
+DELETE FROM employees WHERE name = 'Jack' AND surname = 'Snow';
+
+SELECT * FROM employees ORDER BY emp_id;

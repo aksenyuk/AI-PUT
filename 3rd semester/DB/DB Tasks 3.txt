@@ -1,0 +1,39 @@
+/* Lab 3 */
+
+/* Task 1 */
+
+SELECT surname, salary,
+    CASE
+        WHEN salary < 1500 THEN 'low paid'
+        WHEN salary BETWEEN 1500 AND 3000 THEN 'average paid'
+        WHEN salary > 3000 THEN 'well paid'
+    END AS "label"
+FROM employees
+ORDER BY surname;
+
+/* Task 2 */
+
+SELECT DISTINCT boss_id FROM employees WHERE boss_id IS NOT NULL ORDER BY boss_id;
+
+/* Task 3 */
+
+SELECT DISTINCT dept_id, job FROM employees WHERE dept_id IS NOT NULL ORDER BY dept_id;
+
+/* Task 4 */
+
+SELECT DISTINCT EXTRACT(YEAR FROM hire_date) AS years FROM employees ORDER BY years;
+
+/* Task 5 */
+
+SELECT dept_id FROM departments WHERE dept_id IS NOT NULL
+    MINUS  
+SELECT dept_id FROM employees WHERE job IS NOT NULL;
+
+/* Task 6 */
+
+SELECT surname, salary, 'low paid' AS label FROM employees WHERE salary < 1500
+    UNION
+SELECT surname, salary, 'average paid' AS label FROM employees WHERE salary BETWEEN 1500 AND 3000
+    UNION
+SELECT surname, salary, 'well paid' AS label FROM employees WHERE salary > 3000
+ORDER BY surname;

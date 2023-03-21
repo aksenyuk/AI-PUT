@@ -1,0 +1,57 @@
+/* Lab 1 */
+
+/* Task 1 */
+
+SELECT * FROM departments;
+
+/* Task 2 */
+
+SELECT * FROM employees;
+
+/* Task 3 */
+
+SELECT surname, job, salary * 12 FROM employees;
+
+/* Task 4 */
+
+SELECT surname, job, salary * 12 AS "yearly income" FROM employees;
+
+/* Task 5 */
+
+SELECT surname, job, (salary + COALESCE(add_salary, 0)) AS monthly_income FROM employees ORDER BY monthly_income;
+
+/* Task 6 */
+
+SELECT name, surname AS "assistants" FROM employees WHERE job = 'ASSISTANT' ORDER BY name, surname;
+
+/* Task 7 */
+
+SELECT name || ' ' || surname AS employee, job, salary, dept_id FROM employees WHERE dept_id = 30 OR dept_id = 40 ORDER BY salary DESC;
+
+/* Task 8 */
+
+SELECT name || ' ' || surname AS employee, job, salary FROM employees WHERE salary BETWEEN 1000 AND 2000 ORDER BY salary;
+
+/* Task 9 */
+
+SELECT surname FROM employees WHERE surname LIKE '%son';
+
+/* Task 10 */
+
+SELECT name, surname FROM employees WHERE dept_id IS NULL;
+
+/* Task 11 */
+
+SELECT name, surname, boss_id, salary FROM employees WHERE boss_id IS NOT NULL AND salary > 2000;
+
+/* Task 12 */
+
+SELECT name, surname, dept_id FROM employees WHERE dept_id = 20 AND (surname LIKE 'W%' OR surname LIKE '%son');
+
+/* Task 13 */
+
+SELECT name, surname, (salary + COALESCE(add_salary, 0)) AS monthly_salary FROM employees WHERE (salary + COALESCE(add_salary, 0)) > 4000;
+
+/* Task 14 */
+SELECT 'Employee ' || name || ' ' || surname || ' works as ' || job || ' and earns ' || (salary + COALESCE(add_salary, 0)) AS employees
+FROM employees ORDER BY surname, name;

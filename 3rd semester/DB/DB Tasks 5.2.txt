@@ -1,0 +1,90 @@
+/* Lab 5.2 */
+
+/* Task 1 */
+
+SELECT e.name, e.surname, d.dept_name, d.address FROM employees e FULL OUTER JOIN departments d ON e.dept_id = d.dept_id WHERE e.name IS NOT NULL AND e.surname IS NOT NULL ORDER BY e.surname;
+
+/* Task 2 */
+
+SELECT e.name, e.surname,
+    CASE 
+        WHEN d.dept_name IS NULL THEN 'no department'
+        ELSE d.dept_name
+    END AS dept_name,
+    CASE
+        WHEN d.address IS NULL THEN 'no department'
+        ELSE d.address
+    END AS address
+FROM employees e FULL OUTER JOIN departments d ON e.dept_id = d.dept_id WHERE e.name IS NOT NULL AND e.surname IS NOT NULL ORDER BY e.surname;
+
+/* Task 3 */
+
+SELECT
+    CASE
+        WHEN e.name IS NULL THEN 'no employee'
+        ELSE e.name
+    END AS name,
+    CASE
+        WHEN e.surname IS NULL THEN 'no employee'
+        ELSE e.surname
+    END AS surname,
+    CASE 
+        WHEN d.dept_name IS NULL THEN 'no department'
+        ELSE d.dept_name
+    END AS dept_name,
+    CASE
+        WHEN d.address IS NULL THEN 'no department'
+        ELSE d.address
+    END AS address
+FROM employees e FULL OUTER JOIN departments d ON e.dept_id = d.dept_id ORDER BY e.surname;
+
+/* Task 4 */
+
+SELECT d.dept_name AS department , COUNT(e.name) AS employees_at_dept, SUM(e.salary) AS salaries_at_dept FROM employees e RIGHT OUTER JOIN departments d ON e.dept_id = d.dept_id WHERE d.dept_name IS NOT NULL GROUP BY d.dept_name ORDER BY d.dept_name;
+
+/* Task 5 */
+
+SELECT e.surname,
+    CASE
+        WHEN e.boss_id IS NULL THEN 'no boss'
+        ELSE b.surname
+    END AS boss
+FROM employees e FULL OUTER JOIN employees b ON e.boss_id = b.emp_id WHERE e.surname IS NOT NULL ORDER BY e.surname;
+
+/* Task 6 */
+
+SELECT e.surname,
+    CASE
+        WHEN e.boss_id IS NULL THEN 'no boss'
+        ELSE b.surname
+    END AS boss
+FROM employees e FULL OUTER JOIN employees b ON e.boss_id = b.emp_id WHERE e.surname IS NOT NULL AND (b.surname IN ('Wilson', 'Smith') OR b.surname IS NULL) ORDER BY e.surname;
+
+/* Task 7 */
+
+SELECT e.surname , SUM(12 * e.salary + COALESCE(e.add_salary, 0)) AS emp_annual_salary, (12* b.salary + COALESCE(b.add_salary, 0)) - (12 * e.salary + COALESCE(e.add_salary, 0)) AS less_than_boss FROM employees e FULL OUTER JOIN employees b ON e.boss_id = b.emp_id WHERE e.surname IS NOT NULL AND ((12* b.salary + COALESCE(b.add_salary, 0)) - (12 * e.salary + COALESCE(e.add_salary, 0))) IS NOT NULL GROUP BY e.surname, (12* b.salary + COALESCE(b.add_salary, 0)) - (12 * e.salary + COALESCE(e.add_salary, 0)) ORDER BY e.surname;
+
+/* Task 8 */
+
+SELECT b.surname AS boss, COUNT(e.boss_id) AS subordinates FROM employees e FULL OUTER JOIN employees b ON e.boss_id = b.emp_id WHERE b.surname IS NOT NULL GROUP BY b.surname ORDER BY b.surname;
+
+/* Task 9 */
+
+SELECT e.name || ' ' || e.surname AS employee, d.dept_name, b.name || ' ' || b.surname AS boss, c.dept_name AS boss_department FROM employees e INNER JOIN employees b ON e.boss_id = b.emp_id INNER JOIN departments d ON e.dept_id = d.dept_id INNER JOIN departments c ON c.dept_id = b.dept_id  ORDER BY e.name;
+
+/* Task 10 */
+
+SELECT e.name || ' ' || e.surname AS employee, d.dept_name,
+    CASE
+        WHEN b.name IS NULL THEN 'no boss'
+        ELSE b.name || ' ' || b.surname
+    END AS boss,
+    CASE
+        WHEN c.dept_name IS NULL THEN 'no department'
+        ELSE c.dept_name
+    END AS boss_department
+FROM employees e FULL OUTER JOIN employees b ON e.boss_id = b.emp_id FULL OUTER JOIN departments d ON e.dept_id = d.dept_id FULL OUTER JOIN departments c ON c.dept_id = b.dept_id  ORDER BY e.name;
+
+/* Task 11 */
+
+SELECT COUNT(*) AS rows_of_cartesian_product FROM employees CROSS JOIN departments CROSS JOIN jobs;
