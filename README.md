@@ -4,7 +4,7 @@
 
 ### Done ~due to the lack of computer storage space~ to help out the following AI PUT generations ;)
 
-In each semester folder, you can find a README, describing this particular semester in general
+TODO - In each semester folder, you can find a README, describing this particular semester in general
 
 Even though there's nearly nothing - ***None, NaN, null*** - things posted, you could still find something useful in our [Shared Google Drive](https://drive.google.com/drive/folders/1_qDuhem3CEifSq0E9JsTkdEvJj23GwPu)
 
