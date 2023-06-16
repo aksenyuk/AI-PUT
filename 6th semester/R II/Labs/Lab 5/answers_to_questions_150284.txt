@@ -1,0 +1,10 @@
+Sofya Aksenyuk, 150284.
+
+1. What is the role of the transpose layer after input? 
+
+To convert NHWC (tensorflow) input format into NCHW (onnx).
+
+2. What is the role of the GlobalAveragePool layer after the last Concat layer?
+
+To enforce correspondences between feature maps and classes.
+Before performing the pooling, we have feature maps with the "whitest" pixels indicating finding a feature-like element on an image. Therefore, once the pooling is done, i.e., an average of all pixels in each feature map is computed and returned as a single element, the correct class will correspond to the element of a highest value; and the spacial dimension is reduced (5x48x2x1 -> 5x48x1x1).
